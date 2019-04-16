@@ -1,10 +1,10 @@
-import { green, yellow, red, cyan } from 'chalk';
+import { green, yellow, red, magenta, cyan } from 'chalk';
 
 import { newLine, subheader } from './printer';
 import compareByKey from './compareByKey';
 
 export default ({ deleted, untranslated, added, sortKeys = true }) => {
-  if (!(deleted.length || added.length || untranslated.length)) {
+  if (!(deleted.length || added.length || untranslated.length || modified.length)) {
     console.log(green('  Perfectly maintained, no remarks!'));
     newLine();
   } else {
@@ -31,6 +31,15 @@ export default ({ deleted, untranslated, added, sortKeys = true }) => {
       subheader('Added keys:');
       items.forEach(({ key, message }) =>
         console.log(`  ${green(key)}: ${cyan(message)}`)
+      );
+      newLine();
+    }
+
+    if (modified.length) {
+      const items = sortKeys ? modified.sort(compareByKey) : modified;
+      subheader('Modified keys:');
+      items.forEach(({ key, message }) =>
+        console.log(`  ${magenta(key)}: ${cyan(message)}`)
       );
       newLine();
     }

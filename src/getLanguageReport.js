@@ -1,15 +1,17 @@
 // returns stats for a specific language
 // - added: contains all added messages
+// - modified: contains all existing messages that have been updated
 // - untranslated: contains all untranslated messages
 // - deleted: contains all deleted messages
 // - fileOutput: contains output for the new language file
-//               a single object with all added and untranslated messages
+//               a single object with all added, modified and untranslated messages
 //               in a key (messageKey) value (message) format
 // - whitelistOutput: contains output for the new languageWhitelist file
 //                    all previously whitelisted keys, without the deleted keys
 //
 // {
 //   added: [],
+//   modified: [],
 //   untranslated: [],
 //   deleted: [],
 //   fileOutput: {},
@@ -26,8 +28,9 @@ export const getCleanReport = () => ({
   added: [],
   untranslated: [],
   deleted: [],
+  modified: [],
   fileOutput: {},
-  whitelistOutput: []
+  whitelistOutpsut: []
 });
 
 export default (
@@ -44,9 +47,9 @@ export default (
     const defaultMessage = defaultMessages[key];
 
     if (oldMessage) {
-      result.fileOutput[key] = oldMessage;
-
       if (oldMessage === defaultMessage) {
+        result.fileOutput[key] = oldMessage;
+
         if (languageWhitelist.indexOf(key) === -1) {
           result.untranslated.push({
             key,
@@ -55,6 +58,14 @@ export default (
         } else {
           result.whitelistOutput.push(key);
         }
+      }
+      else {
+        result.fileOutput[key] = defaultMessage;
+
+        result.modified.push({
+          key: key,
+          message: defaultMessage
+        });
       }
     } else {
       result.fileOutput[key] = defaultMessage;
